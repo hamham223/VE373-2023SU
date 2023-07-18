@@ -1,149 +1,40 @@
-/* ************************************************************************** */
-/** Descriptive File Name
+#include <p32xxxx.h>
 
-  @Company
-    Company Name
+void MCU_init() {
+    /* setup I/O ports to connect to the LCD module */
+    // let A,B,D,E all to be output
+    TRISD = 0xFFF0;
+    PORTD = 0;
+    TRISECLR = 0xFFFF;
+    TRISACLR = 0xFFFF;
+    TRISBCLR = 0xFFFF;
 
-  @File Name
-    filename.c
+    /* setup Timer to count for 1 us and 1 ms */
+    SYSKEY = 0x0;               // Ensure OSCCON is lock
+    SYSKEY = 0xAA996655;        // Unlock sequence part 1 of 2 back to back instructions.
+    SYSKEY = 0x556699AA;        // Unlock sequence part 2 of 2 back to back instructions.
+    OSCCONbits.NOSC = 0x0007;   // Write new osc src value to NOSC control bits -- FRS, with original freqeuncy as 8 MHz
+    OSCCONbits.FRCDIV = 0x1; // the prescale of FRC is 2
+    OSCCONbits.PBDIV = 0x0;    // PBCLK is SYSCLK divided by 1. {(Not changed here)Clock is multiplied by 15. PLL output is divided by 1} -- PBCLK has freqeuncy 1 MHz
+    OSCCONbits.OSWEN = 0x0001;  // Initiate clock switch by setting OSWEN bit.
+    SYSKEY = 0x0;               // Write non-key value to perform a re-lock.
 
-  @Summary
-    Brief description of the file.
+    while(OSCCONbits.OSWEN);    // Loop until OSWEN = 0. Value of 0 indicates osc switch is complete.
 
-  @Description
-    Describe the purpose of this file.
- */
-/* ************************************************************************** */
-
-/* ************************************************************************** */
-/* ************************************************************************** */
-/* Section: Included Files                                                    */
-/* ************************************************************************** */
-/* ************************************************************************** */
-
-/* This section lists the other files that are included in this file.
- */
-
-/* TODO:  Include other files here if needed. */
-
-
-/* ************************************************************************** */
-/* ************************************************************************** */
-/* Section: File Scope or Global Data                                         */
-/* ************************************************************************** */
-/* ************************************************************************** */
-
-/*  A brief description of a section can be given directly below the section
-    banner.
- */
-
-/* ************************************************************************** */
-/** Descriptive Data Item Name
-
-  @Summary
-    Brief one-line summary of the data item.
+    /* Configure Timer interrupts */ 
+    INTCONbits.MVEC = 1;        // multi-vector mode
+    IPC2SET = 0x000d;           // timer 2: priority is 3, subpriority is 1
+    IFS0CLR = 0x0110;           // clear the flags for timer 1 and timer 2
     
-  @Description
-    Full description, explaining the purpose and usage of data item.
-    <p>
-    Additional description in consecutive paragraphs separated by HTML 
-    paragraph breaks, as necessary.
-    <p>
-    Type "JavaDoc" in the "How Do I?" IDE toolbar for more information on tags.
-    
-  @Remarks
-    Any additional remarks
- */
-int global_data;
-
-
-/* ************************************************************************** */
-/* ************************************************************************** */
-// Section: Local Functions                                                   */
-/* ************************************************************************** */
-/* ************************************************************************** */
-
-/*  A brief description of a section can be given directly below the section
-    banner.
- */
-
-/* ************************************************************************** */
-
-/** 
-  @Function
-    int ExampleLocalFunctionName ( int param1, int param2 ) 
-
-  @Summary
-    Brief one-line description of the function.
-
-  @Description
-    Full description, explaining the purpose and usage of the function.
-    <p>
-    Additional description in consecutive paragraphs separated by HTML 
-    paragraph breaks, as necessary.
-    <p>
-    Type "JavaDoc" in the "How Do I?" IDE toolbar for more information on tags.
-
-  @Precondition
-    List and describe any required preconditions. If there are no preconditions,
-    enter "None."
-
-  @Parameters
-    @param param1 Describe the first parameter to the function.
-    
-    @param param2 Describe the second parameter to the function.
-
-  @Returns
-    List (if feasible) and describe the return values of the function.
-    <ul>
-      <li>1   Indicates an error occurred
-      <li>0   Indicates an error did not occur
-    </ul>
-
-  @Remarks
-    Describe any special behavior not described above.
-    <p>
-    Any additional remarks.
-
-  @Example
-    @code
-    if(ExampleFunctionName(1, 2) == 0)
-    {
-        return 3;
-    }
- */
-static int ExampleLocalFunction(int param1, int param2) {
-    return 0;
+    /* enable global and individual interrupts */
+    asm( "ei" );                // enable interrupt globally
+    // LATDbits.LATD2 = 1;
+    IEC0SET = 0x0110;           // enable interrupt for timer 1 and timer 2
 }
 
+int main() {
+    MCU_init();
 
-/* ************************************************************************** */
-/* ************************************************************************** */
-// Section: Interface Functions                                               */
-/* ************************************************************************** */
-/* ************************************************************************** */
-
-/*  A brief description of a section can be given directly below the section
-    banner.
- */
-
-// *****************************************************************************
-
-/** 
-  @Function
-    int ExampleInterfaceFunctionName ( int param1, int param2 ) 
-
-  @Summary
-    Brief one-line description of the function.
-
-  @Remarks
-    Refer to the example_file.h interface header for function usage details.
- */
-int ExampleInterfaceFunction(int param1, int param2) {
+    while (1) ;
     return 0;
 }
-
-
-/* *****************************************************************************
- End of File
- */
