@@ -4,11 +4,13 @@
     <logicalFolder name="HeaderFiles" displayName="头文件" projectFiles="true">
       <itemPath>display.h</itemPath>
       <itemPath>music.h</itemPath>
+      <itemPath>measure.h</itemPath>
     </logicalFolder>
     <logicalFolder name="SourceFiles" displayName="源文件" projectFiles="true">
       <itemPath>main.c</itemPath>
       <itemPath>music.c</itemPath>
       <itemPath>display.c</itemPath>
+      <itemPath>measure.c</itemPath>
     </logicalFolder>
     <logicalFolder name="LinkerScript" displayName="链接器文件" projectFiles="true">
     </logicalFolder>

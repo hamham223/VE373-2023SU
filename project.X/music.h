@@ -5,4 +5,4 @@ void configurePWM(void);
 
 void configureT3(void);
 
-#endif
+#endif /* music.h */
