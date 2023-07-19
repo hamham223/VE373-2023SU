@@ -233,6 +233,12 @@ void drawPoint(uchar x, uchar y){
     SendString(COMMAND_END, 4);
 }
 
+/**
+ * @brief draw a "+" at (x,y)
+ * 
+ * @param x x-axis
+ * @param y y-axis 
+ */
 void drawCross(uchar x, uchar y) {
     drawLine(x, y-1, x, y+1,0,0);
     drawLine(x-1, y, x+1, y,0,0);
@@ -248,4 +254,26 @@ void showInit(void) {
     SendString(COMMAND_END, 4);
     delay(1000);
     screenClear();
+}
+
+/**
+ * @brief move the Rectangle by "step"
+ * @attention assume the rectangle is already here
+ * 
+ * @param x1 x-axis of the left upper point
+ * @param y1 y-axis of the left upper point
+ * @param x2 x-axis of the right lower point
+ * @param y2 y-axis of the right lower point
+ * @param step move step, usually 1 or 2
+ * @param solid whether the rectangle to be moved is solid
+ */
+void moveRectangleDown(uchar x1, uchar y1, uchar x2, uchar y2, uchar step, uchar solid) {
+    if (step > y2-y1) step = y2-y1;
+    setColorBoard(0);
+    drawRectangle(x1, y1, x2, y2, solid);
+    // drawRectangle(x1, y1, x2, y1+step, solid);
+    // drawLine(x1, y2, x2, y2, 0, 0);
+    setColorBoard(1);
+    drawRectangle(x1, y1+step, x2, y2+step, solid);
+    // drawRectangle(x1, y1+step, x2, y2+step, solid);
 }
