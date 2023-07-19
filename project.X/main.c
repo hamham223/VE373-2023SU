@@ -1,5 +1,6 @@
 #include <p32xxxx.h>
 #include "display.h"
+#include "measure.h"
 
 void MCU_init() {
     /* setup I/O ports to connect to the LCD module */
@@ -36,36 +37,49 @@ void MCU_init() {
 int main() {
     MCU_init();
     UART_init();
-
-    screenClear();
-    delay(200);
+    // drawExample();
     showInit();
     delay(200);
-    screenClear();
-    delay(100);
-    const unsigned char command_9[25] = {
-        0xfe, 0xfd, 0x24, 0x00, 0x10, 
-        0x00, 0x02, 0x00, 0x3c, 
-        0x00, 0x0f, 0x00, 0x22, 
-        0x00, 0x1d, 0x00, 0x3c, 
-        0x00, 0x28, 0x00, 0x22, 
-        0xdd, 0xcc, 0xbb, 0xaa
-    };
-    const unsigned char test[21] = {
-        0xfe, 0xfd,
-        0x23, 0x00, 0x0c, 
-        0x00, 0x05, 0x00, 0x20,
-        0xdd, 0xcc, 0xbb, 0xaa
-    };
-    // SendString(command_9, 25);
-    SendString(test, 13);
-    // SendString(test, 25);
     // screenClear();
-    drawLine(0x04, 0x04, 0x54, 0x04, 1, 2);
-    drawRectangle(0x6f, 0x00, 0x7f, 0x0f, 0);
-    drawCross(0x20,0x20);
     delay(100);
-    drawPoint(0x30,0x21);
+
+    drawLine(90, 0, 90, 63, 0, 0);
+    drawLine(22, 0, 22, 63, 1, 2);
+    drawLine(45, 0, 45, 63, 1, 2);
+    drawLine(67, 0, 67, 63, 1, 2);
+    drawRectangle(0x00, 0x00, 0x7f, 0x3f, 0);
+
+    drawCross(11, 58);
+    drawCross(34, 58);
+    drawCross(56, 58);
+    drawCross(79, 58);
+
+    drawRectangle(98, 6, 118, 21, 0);
+    showChar(106, 9, 'H');
+    drawRectangle(98, 24, 118, 39, 0);
+    showChar(104, 27, '9');
+    showChar(110, 27, '9');
+    drawRectangle(98, 42, 118, 57, 0);
+    showChar(104, 45, '9');
+    showChar(110, 45, '9');
+    initRects();
+
+    uchar i = 0;
+    uchar j = 0;
+    while (1) {
+        for (i = 0; i < 4; i++) {
+            moveRectangleDown(pts[i].x, pts[i].y, pts[i].x+BLOCK_WIDTH, pts[i].y+BLOCK_HEIGHTH, 2, 0);
+            pts[i].y = pts[i].y + 2;
+            if (pts[i].y >=45) {
+                clearRectangle(pts[i].x, pts[i].y, pts[i].x+BLOCK_WIDTH, pts[i].y+BLOCK_HEIGHTH, 0);
+                pts[i].y = 1;
+                j = j+1;
+                showNumber(104, 45, j);
+            }
+            delay(5);
+        }
+    }
+
     while (1) ;
     return 0;
 }

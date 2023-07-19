@@ -215,6 +215,12 @@ void drawRectangle(uchar x1, uchar y1, uchar x2, uchar y2, uchar solid){
     drawRectangleCommand(rect, 12);
 }
 
+void clearRectangle(uchar x1, uchar y1, uchar x2, uchar y2, uchar solid){
+    revertColor();
+    drawRectangle(x1, y1, x2, y2, solid);
+    revertColor();
+}
+
 /**
  * @brief draw point ad (x,y)
  * @attention have some bugs...
@@ -246,7 +252,7 @@ void drawCross(uchar x, uchar y) {
 
 void showInit(void) {
     SendString(COMMAND_BEGIN, 2);
-    uchar init[3] = {0};
+    uchar init[7] = {0};
     init[0] = 0x33; init[2] = 0x0c;
     init[4] = 0x18; init[6] = 0x12;
     SendString(init, 7);
@@ -276,4 +282,50 @@ void moveRectangleDown(uchar x1, uchar y1, uchar x2, uchar y2, uchar step, uchar
     setColorBoard(1);
     drawRectangle(x1, y1+step, x2, y2+step, solid);
     // drawRectangle(x1, y1+step, x2, y2+step, solid);
+}
+
+/**
+ * @brief show the char at (x,y)
+ * @exception none, if (x,y) is outsize the board, do nothing
+ * 
+ * @param x x-axis
+ * @param y y-aix
+ * @param str char to show
+ */
+void showChar(uchar x, uchar y, uchar str) {
+    if (isInBoard(x,y)==0) return;
+    uchar word[7] = {0};
+    word[0] = 0x31; word[2] = 0x05;
+    word[4] = x; word[6] = y;
+    SendString(COMMAND_BEGIN, 2);
+    SendString(word, 7);
+    SendData(str);
+    SendString(COMMAND_END, 4);
+}
+
+/**
+ * @brief show the two digits of num
+ * 
+ * @param x start x-axis
+ * @param y start y-axis
+ * @param num number to show
+ */
+void showNumber(uchar x, uchar y, uchar num) {
+    if (isInBoard(x,y)==0) return;
+    uchar a;
+    a = num / 10;
+    showChar(x, y, a+48);
+    a = num%10;
+    showChar(x+6, y, a+48);
+}
+
+void initRects(void) {
+    pts[0].x = 6;
+    pts[1].x = 28;
+    pts[2].x = 51;
+    pts[3].x = 73;
+    pts[0].y = 31;
+    pts[1].y = 21;
+    pts[2].y = 11;
+    pts[3].y = 1;
 }
