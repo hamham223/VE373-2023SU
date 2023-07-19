@@ -15,7 +15,7 @@ void MCU_init() {
     SYSKEY = 0xAA996655;        // Unlock sequence part 1 of 2 back to back instructions.
     SYSKEY = 0x556699AA;        // Unlock sequence part 2 of 2 back to back instructions.
     OSCCONbits.NOSC = 0x0007;   // Write new osc src value to NOSC control bits -- FRS, with original freqeuncy as 8 MHz
-    OSCCONbits.FRCDIV = 0x1; // the prescale of FRC is 2
+    OSCCONbits.FRCDIV = 0x0; // the prescale of FRC is 1
     OSCCONbits.PBDIV = 0x0;    // PBCLK is SYSCLK divided by 1. {(Not changed here)Clock is multiplied by 15. PLL output is divided by 1} -- PBCLK has freqeuncy 1 MHz
     OSCCONbits.OSWEN = 0x0001;  // Initiate clock switch by setting OSWEN bit.
     SYSKEY = 0x0;               // Write non-key value to perform a re-lock.
@@ -39,7 +39,7 @@ int main() {
 
     screenClear();
     delay(200);
-    drawExample();
+    showInit();
     delay(200);
     screenClear();
     delay(100);
@@ -51,20 +51,21 @@ int main() {
         0x00, 0x28, 0x00, 0x22, 
         0xdd, 0xcc, 0xbb, 0xaa
     };
-    const unsigned char test[25] = {
+    const unsigned char test[21] = {
         0xfe, 0xfd,
-        0x24, 0x00, 0x10, 
-        0x00, 0x14, 0x00, 0x14,
-        0x00, 0x14, 0x00, 0x24,
-        0x00, 0x14, 0x00, 0x14,
-        0x00, 0x14, 0x00, 0x24,
+        0x23, 0x00, 0x0c, 
+        0x00, 0x05, 0x00, 0x20,
         0xdd, 0xcc, 0xbb, 0xaa
     };
     // SendString(command_9, 25);
-    // SendString(test, 25);
+    SendString(test, 13);
     // SendString(test, 25);
     // screenClear();
-    drawLine(0x04, 0x04, 0x34, 0x04, 1, 2);
+    drawLine(0x04, 0x04, 0x54, 0x04, 1, 2);
+    drawRectangle(0x6f, 0x00, 0x7f, 0x0f, 0);
+    drawCross(0x20,0x20);
+    delay(100);
+    drawPoint(0x30,0x21);
     while (1) ;
     return 0;
 }

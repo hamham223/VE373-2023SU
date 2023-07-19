@@ -15,7 +15,7 @@ void UART_init(void) {
 
     // Setup for UART Transmit
     U1MODEbits.BRGH = 1; // high speed
-    U1BRG = 8; // baud rate: PBCLK / 4 / 9
+    U1BRG = 16; // baud rate: PBCLK / 4 / 9
     // The most common data format is 8,N,1 
     U1MODEbits.PDSEL = 0b00; // 8-bit data, no parity (means check)
     U1MODEbits.STSEL = 0; // 1-bit stop bit
@@ -120,7 +120,6 @@ void delay(unsigned int time){
 
 void drawLineCommand(unsigned char * line_cmd, unsigned char size) {
     SendString(COMMAND_BEGIN, 2);
-    LATDbits.LATD0 = 1;
     SendString(line_cmd, size);
     SendString(COMMAND_END, 4);
 }
@@ -138,13 +137,13 @@ void drawLineCommand(unsigned char * line_cmd, unsigned char size) {
  * @exception none, if point is outside the screen, do nothing
  */
 void drawLine(uchar x1, uchar y1, uchar x2, uchar y2, uchar dashed, uchar sep) {
+    if (x1 > _XLIM_ || x2 > _XLIM_ || y1 > _YLIM_ || y2 > _YLIM_) return;
     uchar line[19] = {0};
     line[0] = 0x24; line[2] = 0x10;
     line[4] = x1; line[6] = y1;
     line[8] = x2; line[10] = y2;
     line[12] = x1; line[14] = y1;
     line[16] = x2; line[18] = y2;
-    if (x1 > _XLIM_ || x2 > _XLIM_ || y1 > _YLIM_ || y2 > _YLIM_) return;
     if (dashed==0) {
         drawLineCommand(line, 19);
         return;
@@ -184,4 +183,69 @@ void screenClear(void) {
     unsigned char clear[3] = {0x22, 0x00, 0x00};
     SendString(clear, 3);
     SendString(COMMAND_END, 4);
+}
+
+uchar isInBoard(uchar x, uchar y){
+    return (x < _XLIM_ && y < _YLIM_);
+}
+
+void drawRectangleCommand(uchar * rect_cmd, uchar size){
+    SendString(COMMAND_BEGIN, 2);
+    SendString(rect_cmd, 12);
+    SendString(COMMAND_END, 4);
+}
+
+/**
+ * @brief draw rectangle on the screen
+ * 
+ * @param x1 x-axis of start point
+ * @param y1 y-axis of start point
+ * @param x2 x-axis of end point
+ * @param y2 y-axis of end point
+ * @param solid non-zero if draw solid rectangle
+ * @exception none, if point is outside the screen, do nothing
+ */
+void drawRectangle(uchar x1, uchar y1, uchar x2, uchar y2, uchar solid){
+    if (x1 > _XLIM_ || x2 > _XLIM_ || y1 > _YLIM_ || y2 > _YLIM_) return;
+    uchar rect[12] = {0};
+    rect[0] = 0x26; rect[2] = 0x09;
+    rect[5] = x1; rect[7] = y1;
+    rect[9] = x2; rect[11] = y2;
+    if (solid!=0) rect[3] = 0x01;
+    drawRectangleCommand(rect, 12);
+}
+
+/**
+ * @brief draw point ad (x,y)
+ * @attention have some bugs...
+ * @exception if (x,y) out of the borad, do nothing
+ * 
+ * @param x 
+ * @param y 
+ */
+void drawPoint(uchar x, uchar y){
+    if (isInBoard(x,y)==0) return;
+    uchar point[7] = {0};
+    point[0] = 0x23; point[2] = 0x0c;
+    point[4] = x; point[6] = y;
+    SendString(COMMAND_BEGIN, 2);
+    SendString(point, 7);
+    SendString(COMMAND_END, 4);
+}
+
+void drawCross(uchar x, uchar y) {
+    drawLine(x, y-1, x, y+1,0,0);
+    drawLine(x-1, y, x+1, y,0,0);
+}
+
+void showInit(void) {
+    SendString(COMMAND_BEGIN, 2);
+    uchar init[3] = {0};
+    init[0] = 0x33; init[2] = 0x0c;
+    init[4] = 0x18; init[6] = 0x12;
+    SendString(init, 7);
+    SendString("Loading", 8);
+    SendString(COMMAND_END, 4);
+    delay(1000);
+    screenClear();
 }
