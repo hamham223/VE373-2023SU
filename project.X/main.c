@@ -2,6 +2,20 @@
 #include "display.h"
 #include "measure.h"
 
+void ADC_init(){
+        volatile double voltage = 0;
+    AD1PCFG = 0xFFF7; // PORTB = Digital; RB2 = analog
+	AD1CON1 = 0x40;// Timer3 period match ends sampling, integer 16-bit
+	AD1CHS = 0x00030000;// Connect RB3/AN3 as CH0 input
+
+	AD1CSSL = 0;
+	AD1CON3 = 0x0000;// Sample time is TMR3, TAD = internal TPB * 2
+	AD1CON2 = 0x0000;// Interrupt at the end of each conversion
+    AD1CON1SET = 0x8000; // turn ON the ADC
+	AD1CON1SET = 0x0004;// start auto sampling every 2 mSecs
+}
+
+
 void MCU_init() {
     /* setup I/O ports to connect to the LCD module */
     // let A,B,D,E all to be output
@@ -43,7 +57,7 @@ int main() {
     // screenClear();
     delay(100);
 
-    drawLine(90, 0, 90, 63, 0, 0);
+   /* drawLine(90, 0, 90, 63, 0, 0);
     drawLine(22, 0, 22, 63, 1, 2);
     drawLine(45, 0, 45, 63, 1, 2);
     drawLine(67, 0, 67, 63, 1, 2);
@@ -81,5 +95,18 @@ int main() {
     }
 
     while (1) ;
+    * */
+    double the_volt=0;
+    while(1){
+        the_volt=getPressure();
+        if(the_volt<1.5){
+            drawCross(11, 58);
+        }else if (the_volt<2.5){
+            drawCross(34, 58);
+        }else{
+            drawCross(56, 58);
+        }
+        showNumber(104,45,(char)(10*the_volt));
+    }
     return 0;
 }
