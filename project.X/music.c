@@ -19,14 +19,14 @@ static int notes[] = {C4, D4, E4, C4, G4, 0,
                 E4, D4, G4, D4, 0, 
                 C4, A3, E4, C4, B3, 0,
                 C4, B3, A3, B3, C4, D4, 0,
-                 G3, C4, D4, E4, F4, 0,
+                G3, C4, D4, E4, F4, 0,
                 F4, E4, D4, D4, 0};
-static int durations[] = {100, 100, 100, 100, 300, 100, 
-                  100, 100, 300, 120, 80, 
-                  100, 100, 200, 100, 300,100,
-                  100, 100, 150, 150, 200,100, 100, 
-                  100, 100, 100, 100, 300,100,
-                  120, 100, 200, 300, 100000};
+static int durations[] = {3000, 3000, 3000, 3000, 3000, 2000, 
+                  3000, 3000, 3000, 3000, 3000, 
+                  3000, 3000, 3000, 3000, 3000,3000,
+                  3000, 3000, 3000, 3000, 3000,3000, 3000, 
+                  3000, 3000, 3000, 3000, 3000,3000,
+                  3000, 3000, 3000, 3000, 10000};
 static volatile int index = 0; // ?????
 
 
@@ -36,7 +36,7 @@ void configurePWM(void) {
     // ?? PWM ??
     T2CONbits.TON = 0;      // ?? Timer2
     T2CONbits.TCS = 0;      // ???????
-    T2CONbits.TCKPS = 0b00; // ?????? 1:1
+    T2CONbits.TCKPS = 0b11; // ?????? 1:1
     TMR2 = 0;               // ?????
     PR2 = 0; // ????
 
@@ -50,31 +50,31 @@ void configurePWM(void) {
     T2CONbits.TON = 1;      // ?? Timer2
 }
 
-void configureT3(void) {
+void configureT4(void) {
     // 
-    T3CONbits.TON = 0;      // ??Timer3
-    T3CONbits.TCS = 0;      // ???????
-    T3CONbits.TCKPS = 0b111; // ????1:256
-    PR3 = 100;           // ????
-    TMR3 = 0;               // ?????
+    T4CONbits.TON = 0;      // ??Timer4
+    T4CONbits.TCS = 0;      // ???????
+    T4CONbits.TCKPS = 0b111; // ????1:256
+    PR4 = 1200;           // ????
+    TMR4 = 0;               // ?????
 
     // ????
-    IPC3bits.T3IP = 4;     // ????????4
-    IFS0bits.T3IF = 0;     // ??Timer3?????
-    IEC0bits.T3IE = 1;     // ??Timer3??
+    IPC4bits.T4IP = 4;
+    IFS0bits.T4IF = 0;     // ??Timer4?????
+    IEC0bits.T4IE = 1;     // ??Timer4??
 
-    T3CONbits.TON = 1;     // ??Timer3
+    T4CONbits.TON = 1;     // ??Timer4
 }
 
 
 // ???3??????
-#pragma interrupt timer_3_interrupt ipl4 vector 12
-void timer_3_interrupt(void) {
-    TMR3 = 0;               // ?????
-    IFS0bits.T3IF = 0; // ?? Timer3 ?????
+#pragma interrupt timer_4_interrupt ipl5 vector 16
+void timer_4_interrupt(void) {
+    TMR4 = 0;               // ?????
+    IFS0bits.T4IF = 0; // ?? Timer3 ?????
     if (index/2<sizeof(notes)){
         if (index%2==0){
-            PR3 = durations[index/2]*total_time/8000;
+            PR4 = durations[index/2]*total_time/8000;
             if (notes[index/2]==0){
                 OC1RS = 0;
             }else{
@@ -84,10 +84,11 @@ void timer_3_interrupt(void) {
             }    
         }
         else{
-            PR3 = 50*total_time/8000;
+            PR4 = 50*total_time/8000;
             OC1RS = 0;
         }
         index+=1;
+        if (index == 68) index = 0;
     }
     else {
         OC1RS = 0;
