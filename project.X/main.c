@@ -1,19 +1,7 @@
 #include <p32xxxx.h>
 #include "display.h"
 #include "measure.h"
-
-void ADC_init(){
-        volatile double voltage = 0;
-    AD1PCFG = 0xFFF7; // PORTB = Digital; RB2 = analog
-	AD1CON1 = 0x40;// Timer3 period match ends sampling, integer 16-bit
-	AD1CHS = 0x00030000;// Connect RB3/AN3 as CH0 input
-
-	AD1CSSL = 0;
-	AD1CON3 = 0x0000;// Sample time is TMR3, TAD = internal TPB * 2
-	AD1CON2 = 0x0000;// Interrupt at the end of each conversion
-    AD1CON1SET = 0x8000; // turn ON the ADC
-	AD1CON1SET = 0x0004;// start auto sampling every 2 mSecs
-}
+#include "music.h"
 
 
 void MCU_init() {
@@ -23,7 +11,7 @@ void MCU_init() {
     PORTD = 0;
     TRISECLR = 0xFFFF;
     TRISACLR = 0xFFFF;
-    TRISBCLR = 0xFFFF;
+    // TRISBCLR = 0xFFFF;
 
     /* setup Timer to count for 1 us and 1 ms */
     SYSKEY = 0x0;               // Ensure OSCCON is lock
@@ -39,13 +27,13 @@ void MCU_init() {
 
     /* Configure Timer interrupts */ 
     INTCONbits.MVEC = 1;        // multi-vector mode
-    IPC2SET = 0x000d;           // timer 2: priority is 3, subpriority is 1
-    IFS0CLR = 0x0110;           // clear the flags for timer 1 and timer 2
+    IEC0SET = (1 << 10);   // ?? Timer2 ??
+    IEC0SET = (1 << 12);   // ?? Timer3 ??
+    IEC0SET = (1 << 14);
     
     /* enable global and individual interrupts */
     asm( "ei" );                // enable interrupt globally
     // LATDbits.LATD2 = 1;
-    IEC0SET = 0x0110;           // enable interrupt for timer 1 and timer 2
 }
 
 int main() {
@@ -53,11 +41,13 @@ int main() {
     UART_init();
     // drawExample();
     showInit();
-    delay(200);
+    delay(50);
     // screenClear();
-    delay(100);
+    // delay(100);
+    configurePWM();
+    configureT4();
 
-   /* drawLine(90, 0, 90, 63, 0, 0);
+    drawLine(90, 0, 90, 63, 0, 0);
     drawLine(22, 0, 22, 63, 1, 2);
     drawLine(45, 0, 45, 63, 1, 2);
     drawLine(67, 0, 67, 63, 1, 2);
@@ -80,33 +70,62 @@ int main() {
 
     uchar i = 0;
     uchar j = 0;
+    ADC_init();
+    double the_volt;
     while (1) {
+        the_volt = 0;
         for (i = 0; i < 4; i++) {
-            moveRectangleDown(pts[i].x, pts[i].y, pts[i].x+BLOCK_WIDTH, pts[i].y+BLOCK_HEIGHTH, 2, 0);
-            pts[i].y = pts[i].y + 2;
-            if (pts[i].y >=45) {
+            moveRectangleDown(pts[i].x, pts[i].y, pts[i].x+BLOCK_WIDTH, pts[i].y+BLOCK_HEIGHTH, 3, 0);
+            pts[i].y = pts[i].y + 3;
+            if (pts[i].y >=47) {
                 clearRectangle(pts[i].x, pts[i].y, pts[i].x+BLOCK_WIDTH, pts[i].y+BLOCK_HEIGHTH, 0);
                 pts[i].y = 1;
                 j = j+1;
                 showNumber(104, 45, j);
             }
-            delay(5);
+            delay(4);
         }
-    }
-
-    while (1) ;
-    * */
-    double the_volt=0;
-    while(1){
         the_volt=getPressure();
-        if(the_volt<1.5){
+        if(the_volt<1){
             drawCross(11, 58);
-        }else if (the_volt<2.5){
+            delay(5);
+        }else if (the_volt<2.0){
             drawCross(34, 58);
+            delay(5);
         }else{
             drawCross(56, 58);
+            setColorBoard(0);
+            drawCross(34, 58);
+            drawCross(11, 58);
+            setColorBoard(1);
+            delay(5);
         }
         showNumber(104,45,(char)(10*the_volt));
+        delay(5);
     }
+
+    
+    ADC_init();
+    while(1){
+        the_volt=getPressure();
+        if(the_volt<1){
+            drawCross(11, 58);
+            delay(10);
+        }else if (the_volt<2.0){
+            drawCross(34, 58);
+            delay(10);
+        }else{
+            drawCross(56, 58);
+            setColorBoard(0);
+            drawCross(34, 58);
+            drawCross(11, 58);
+            setColorBoard(1);
+            delay(10);
+        }
+        showNumber(104,45,(char)(10*the_volt));
+        delay(20);
+
+    }
+    
     return 0;
 }
