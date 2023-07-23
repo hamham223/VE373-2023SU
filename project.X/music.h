@@ -5,4 +5,8 @@ void configurePWM(void);
 
 void configureT4(void);
 
+unsigned char global_index;
+
+unsigned char getInitHeight(void);
+
 #endif /* music.h */

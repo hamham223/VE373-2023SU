@@ -1,6 +1,7 @@
 #include "gameplay.h"
 #include "measure.h"
 #include "display.h"
+#include "music.h"
 #include <p32xxxx.h>
 
 uchar Check_Remove_Rect(uchar rectx,uchar recty,uchar x,uchar y){
@@ -41,11 +42,14 @@ uchar Check_Remove_Rect(uchar rectx,uchar recty,uchar x,uchar y){
 
 static int hit = 0;
 extern uchar combo;
+extern uchar global_index;
+const char status[15] = "HHHHGGGGPPPP";
 
-static void showHits(void){
+static void showHits(uchar st){
+
     if (hit==10) {
         // a new hit
-        showChar(106, 9, 'H');
+        showChar(106, 9, status[st]);
     }
     else if (hit==0) {
         // clear
@@ -64,8 +68,8 @@ static void updateScore(void) {
 }
 
 void comboClear(void) {
+    if (combo > 0) showNumber(104, 27, combo);
     combo = 0;
-    showNumber(104, 27, combo);
 }
 
 pt checkHits(pt a,uchar x,uchar y,double volt_gate_l,double volt_gate_r,double volt){
@@ -74,18 +78,20 @@ pt checkHits(pt a,uchar x,uchar y,double volt_gate_l,double volt_gate_r,double v
     result.x=a.x;
     result.y=a.y;
     result.t=a.t;
+    uchar status = 0;
     
     if(a.x<x&&a.x+BLOCK_WIDTH>x){
         if(a.y<y&&a.y+BLOCK_HEIGHTH>y){
             if (volt<volt_gate_r&&volt>volt_gate_l){
                 result.t=0;
                 hit = 10;
+                status = y - a.y;
                 clearRectangle(a.x,a.y, a.x+BLOCK_WIDTH,a.y+BLOCK_HEIGHTH, 0);
                 updateScore();
             }
         }
     }
-    if (hit >= 0) showHits();
+    if (hit >= 0) showHits(status);
     delay(2);
     return result;
 }

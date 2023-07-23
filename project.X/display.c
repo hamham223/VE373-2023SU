@@ -258,8 +258,22 @@ void showInit(void) {
     SendString(init, 7);
     SendString("Loading", 8);
     SendString(COMMAND_END, 4);
-    delay(1000);
+    delay(100);
     screenClear();
+}
+
+void showEnd(void) {
+    SendString(COMMAND_BEGIN, 2);
+    uchar init[7] = {0};
+    init[0] = 0x33; init[2] = 0x0c;
+    init[4] = 0x03; init[6] = 0x12;
+    SendString(init, 7);
+    SendString("End....", 8);
+    T4CONbits.TON = 0;
+    T3CONbits.TON = 0;
+    OC1CONbits.ON = 0; 
+    SendString(COMMAND_END, 4);
+    delay(1000);
 }
 
 /**
@@ -331,10 +345,10 @@ void initRects(void) {
     pts[1].x = 28;
     pts[2].x = 51;
     pts[3].x = 73;
-    pts[0].y = 30;
-    pts[1].y = 21;
-    pts[2].y = 12;
-    pts[3].y = 3;
+    pts[0].y = 36;
+    pts[1].y = 27;
+    pts[2].y = 18;
+    pts[3].y = 9;
     pts[0].t = 1;
     pts[1].t = 1;
     pts[2].t = 1;

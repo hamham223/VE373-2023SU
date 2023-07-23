@@ -17,17 +17,18 @@
 static int total_time = 24000;
 static int notes[] = {C4, D4, E4, C4, G4, 0, 
                 E4, D4, G4, D4, 0, 
-                C4, A3, E4, C4, B3, 0,
+                C4, A3, E4, 0, C4, B3, 0,
                 C4, B3, A3, B3, C4, D4, 0,
-                G3, C4, D4, E4, F4, 0,
-                F4, E4, D4, D4, 0};
-static int durations[] = {3000, 3000, 3000, 3000, 3000, 2000, 
-                  3000, 3000, 3000, 3000, 3000, 
-                  3000, 3000, 3000, 3000, 3000,3000,
-                  3000, 3000, 3000, 3000, 3000,3000, 3000, 
-                  3000, 3000, 3000, 3000, 3000,3000,
-                  3000, 3000, 3000, 3000, 10000};
+                G3, C4, D4, E4, 0, F4, 0,
+                F4, E4, D4, D4, 0, 0};
+static int durations[] = {3000, 3000, 3000, 3000, 5000, 3000, 
+                  3000, 5000, 5000, 2000, 3000, 
+                  3000, 3000, 5000, 3000, 3000, 7000, 3000,
+                  3000, 3000, 4000, 4000, 2000, 2500, 2000, 
+                  4000, 3000, 2000, 2000, 5000, 3000, 3000,
+                  3000, 3000, 2000, 5000, 10000, 10000};
 static volatile int index = 0; // ?????
+extern unsigned char global_index;
 
 
 #define PWM_FREQUENCY_HZ  50   // ?? PWM ????
@@ -36,7 +37,7 @@ void configurePWM(void) {
     // ?? PWM ??
     T2CONbits.TON = 0;      // ?? Timer2
     T2CONbits.TCS = 0;      // ???????
-    T2CONbits.TCKPS = 0b11; // ?????? 1:1
+    T2CONbits.TCKPS = 0b101; // ?????? 1:1
     TMR2 = 0;               // ?????
     PR2 = 0; // ????
 
@@ -52,6 +53,7 @@ void configurePWM(void) {
 
 void configureT4(void) {
     // 
+    global_index = 0;
     T4CONbits.TON = 0;      // ??Timer4
     T4CONbits.TCS = 0;      // ???????
     T4CONbits.TCKPS = 0b111; // ????1:256
@@ -72,13 +74,13 @@ void configureT4(void) {
 void timer_4_interrupt(void) {
     TMR4 = 0;               // ?????
     IFS0bits.T4IF = 0; // ?? Timer3 ?????
-    if (index/2<sizeof(notes)){
-        if (index%2==0){
-            PR4 = durations[index/2]*total_time/8000;
-            if (notes[index/2]==0){
+    if (global_index/2<sizeof(notes)){
+        if (global_index%2==0){
+            PR4 = durations[global_index/2]*total_time/8000;
+            if (notes[global_index/2]==0){
                 OC1RS = 0;
             }else{
-                int halfPeriod = total_time / notes[index/2];
+                int halfPeriod = total_time / notes[global_index/2];
                 PR2=halfPeriod*2;
                 OC1RS = halfPeriod;
             }    
@@ -87,10 +89,14 @@ void timer_4_interrupt(void) {
             PR4 = 50*total_time/8000;
             OC1RS = 0;
         }
-        index+=1;
-        if (index == 68) index = 0;
+        global_index +=1;
+        if (global_index == 74) global_index = 0;
     }
     else {
         OC1RS = 0;
     }
+}
+
+unsigned char getInitHeight(void) {
+    return 14 - durations[global_index]/1000;
 }

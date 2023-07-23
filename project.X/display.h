@@ -15,6 +15,7 @@ void SendData(const uchar dat);
 void SendString(const unsigned char *s, unsigned int size);
 
 void showInit(void);
+void showEnd(void);
 void showChar(uchar x, uchar y, uchar str);
 void showNumber(uchar x, uchar y, uchar num);
 void drawExample(void);
