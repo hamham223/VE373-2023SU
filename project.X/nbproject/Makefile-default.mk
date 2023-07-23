@@ -57,17 +57,17 @@ OBJECTDIR=build/${CND_CONF}/${IMAGE_TYPE}
 DISTDIR=dist/${CND_CONF}/${IMAGE_TYPE}
 
 # Source Files Quoted if spaced
-SOURCEFILES_QUOTED_IF_SPACED=main.c music.c display.c measure.c
+SOURCEFILES_QUOTED_IF_SPACED=main.c music.c display.c measure.c gameplay.c
 
 # Object Files Quoted if spaced
-OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/main.o ${OBJECTDIR}/music.o ${OBJECTDIR}/display.o ${OBJECTDIR}/measure.o
-POSSIBLE_DEPFILES=${OBJECTDIR}/main.o.d ${OBJECTDIR}/music.o.d ${OBJECTDIR}/display.o.d ${OBJECTDIR}/measure.o.d
+OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/main.o ${OBJECTDIR}/music.o ${OBJECTDIR}/display.o ${OBJECTDIR}/measure.o ${OBJECTDIR}/gameplay.o
+POSSIBLE_DEPFILES=${OBJECTDIR}/main.o.d ${OBJECTDIR}/music.o.d ${OBJECTDIR}/display.o.d ${OBJECTDIR}/measure.o.d ${OBJECTDIR}/gameplay.o.d
 
 # Object Files
-OBJECTFILES=${OBJECTDIR}/main.o ${OBJECTDIR}/music.o ${OBJECTDIR}/display.o ${OBJECTDIR}/measure.o
+OBJECTFILES=${OBJECTDIR}/main.o ${OBJECTDIR}/music.o ${OBJECTDIR}/display.o ${OBJECTDIR}/measure.o ${OBJECTDIR}/gameplay.o
 
 # Source Files
-SOURCEFILES=main.c music.c display.c measure.c
+SOURCEFILES=main.c music.c display.c measure.c gameplay.c
 
 
 
@@ -131,6 +131,12 @@ ${OBJECTDIR}/measure.o: measure.c  nbproject/Makefile-${CND_CONF}.mk
 	@${RM} ${OBJECTDIR}/measure.o 
 	@${FIXDEPS} "${OBJECTDIR}/measure.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE) -g -D__DEBUG -D__MPLAB_DEBUGGER_PIC32MXSK=1  -fframe-base-loclist  -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/measure.o.d" -o ${OBJECTDIR}/measure.o measure.c    -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -mdfp=${DFP_DIR}
 	
+${OBJECTDIR}/gameplay.o: gameplay.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}" 
+	@${RM} ${OBJECTDIR}/gameplay.o.d 
+	@${RM} ${OBJECTDIR}/gameplay.o 
+	@${FIXDEPS} "${OBJECTDIR}/gameplay.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE) -g -D__DEBUG -D__MPLAB_DEBUGGER_PIC32MXSK=1  -fframe-base-loclist  -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/gameplay.o.d" -o ${OBJECTDIR}/gameplay.o gameplay.c    -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -mdfp=${DFP_DIR}
+	
 else
 ${OBJECTDIR}/main.o: main.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} "${OBJECTDIR}" 
@@ -155,6 +161,12 @@ ${OBJECTDIR}/measure.o: measure.c  nbproject/Makefile-${CND_CONF}.mk
 	@${RM} ${OBJECTDIR}/measure.o.d 
 	@${RM} ${OBJECTDIR}/measure.o 
 	@${FIXDEPS} "${OBJECTDIR}/measure.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE)  -g -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/measure.o.d" -o ${OBJECTDIR}/measure.o measure.c    -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -mdfp=${DFP_DIR}
+	
+${OBJECTDIR}/gameplay.o: gameplay.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}" 
+	@${RM} ${OBJECTDIR}/gameplay.o.d 
+	@${RM} ${OBJECTDIR}/gameplay.o 
+	@${FIXDEPS} "${OBJECTDIR}/gameplay.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE)  -g -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/gameplay.o.d" -o ${OBJECTDIR}/gameplay.o gameplay.c    -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -mdfp=${DFP_DIR}
 	
 endif
 

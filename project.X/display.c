@@ -283,6 +283,13 @@ void moveRectangleDown(uchar x1, uchar y1, uchar x2, uchar y2, uchar step, uchar
     drawRectangle(x1, y1+step, x2, y2+step, solid);
     // drawRectangle(x1, y1+step, x2, y2+step, solid);
 }
+void moveRectDown(pt a,uchar step, uchar solid){
+    if(a.t==0){
+        return;
+    }else {
+        moveRectangleDown(a.x,a.y,a.x+BLOCK_WIDTH,a.y+BLOCK_HEIGHTH,step,solid);
+    }
+}
 
 /**
  * @brief show the char at (x,y)
@@ -324,8 +331,12 @@ void initRects(void) {
     pts[1].x = 28;
     pts[2].x = 51;
     pts[3].x = 73;
-    pts[0].y = 31;
+    pts[0].y = 30;
     pts[1].y = 21;
-    pts[2].y = 11;
-    pts[3].y = 1;
+    pts[2].y = 12;
+    pts[3].y = 3;
+    pts[0].t = 1;
+    pts[1].t = 1;
+    pts[2].t = 1;
+    pts[3].t = 1;
 }
