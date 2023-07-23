@@ -44,33 +44,18 @@ int main() {
     // drawExample();
     showInit();
     delay(50);
+    showInterface();
     // screenClear();
     // delay(100);
     // configurePWM();
     // configureT4();
-
-    drawLine(90, 0, 90, 63, 0, 0);
-    drawLine(22, 0, 22, 63, 1, 2);
-    drawLine(45, 0, 45, 63, 1, 2);
-    drawLine(67, 0, 67, 63, 1, 2);
-    drawRectangle(0x00, 0x00, 0x7f, 0x3f, 0);
-
-    drawCross(22, 48);
-    drawCross(45, 48);
-    drawCross(67, 48);
-
-    drawRectangle(98, 6, 118, 21, 0);
-    //showChar(106, 9, 'H');
-    drawRectangle(98, 24, 118, 39, 0);
-    showChar(104, 27, '9');
-    showChar(110, 27, '9');
-    drawRectangle(98, 42, 118, 57, 0);
-    showChar(104, 45, '9');
-    showChar(110, 45, '9');
     initRects();
 
     uchar i = 0;
     uchar j = 0;
+    uchar step = 2;
+    extern uchar combo;
+    combo = 0;
     //uchar hits=0;
     ADC_init();
     double the_volt;
@@ -84,19 +69,19 @@ int main() {
             pts[2].t=0;
             clearRectangle(pts[2].x, pts[2].y, pts[2].x+BLOCK_WIDTH, pts[2].y+BLOCK_HEIGHTH,0);
         }*/
+        pts[2] = checkHits(pts[2], 56, 52, 0.0, 1.0, the_volt);
+        pts[1] = checkHits(pts[1], 34, 52, 0.0, 1.0, the_volt);
+        pts[0] = checkHits(pts[0], 11, 52, 0.0, 2.8, the_volt);
+        pts[3] = checkHits(pts[3], 79, 52, 0.0, 2.8, the_volt);
         for (i = 0; i < 4; i++) {
-            
-                pts[2] = new_Check_Remove_Rect(pts[2],56,48,0,1,the_volt);
-                pts[1] = new_Check_Remove_Rect(pts[1],34,48,0,1,the_volt);
-                pts[0] = new_Check_Remove_Rect(pts[0],11,48,1.1,2.8,the_volt);
-                pts[3] = new_Check_Remove_Rect(pts[3],79,48,1.1,2.8,the_volt);
                 //moveRectangleDown(pts[i].x, pts[i].y, pts[i].x+BLOCK_WIDTH, pts[i].y+BLOCK_HEIGHTH, 3, 0);
-                moveRectDown(pts[i],2,0);
-                pts[i].y = pts[i].y + 2;
+                moveRectDown(pts[i], step, 0);
+                pts[i].y = pts[i].y + step;
             
                 if (pts[i].y >= 53) {
                     clearRectangle(pts[i].x, pts[i].y, pts[i].x+BLOCK_WIDTH, pts[i].y+BLOCK_HEIGHTH, 0);
                     pts[i].y = 1;
+                    if (combo > 0 && pts[i].t == 1) comboClear();
                     pts[i].t = 1;
                     //showNumber(104, 45, j);
                 }

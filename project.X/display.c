@@ -320,7 +320,7 @@ void showChar(uchar x, uchar y, uchar str) {
 void showNumber(uchar x, uchar y, uchar num) {
     if (isInBoard(x,y)==0) return;
     uchar a;
-    a = num / 10;
+    a = (num % 100) / 10;
     showChar(x, y, a+48);
     a = num%10;
     showChar(x+6, y, a+48);

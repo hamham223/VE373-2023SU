@@ -1,6 +1,8 @@
 #include "gameplay.h"
 #include "measure.h"
 #include "display.h"
+#include <p32xxxx.h>
+
 uchar Check_Remove_Rect(uchar rectx,uchar recty,uchar x,uchar y){
     uchar flag=0;
     if(rectx<x&&rectx+BLOCK_WIDTH>x){
@@ -38,32 +40,84 @@ uchar Check_Remove_Rect(uchar rectx,uchar recty,uchar x,uchar y){
 */
 
 static int hit = 0;
+extern uchar combo;
 
 static void showHits(void){
-    if (hit==10) showChar(106, 9, 'H');
-    else if (hit==0) showChar(106, 9, ' ');
+    if (hit==10) {
+        // a new hit
+        showChar(106, 9, 'H');
+    }
+    else if (hit==0) {
+        // clear
+        showChar(106, 9, ' ');
+    }
     hit--;
 }
 
-pt new_Check_Remove_Rect(pt a,uchar x,uchar y,double volt_gate_l,double volt_gate_r,double volt){
+static void updateScore(void) {
+    static uchar score = 0;
+    score += 1;
+    showNumber(104, 45, score);
+    combo += 1;
+    showNumber(104, 27, combo);
+    delay(1);
+}
+
+void comboClear(void) {
+    combo = 0;
+    showNumber(104, 27, combo);
+}
+
+pt checkHits(pt a,uchar x,uchar y,double volt_gate_l,double volt_gate_r,double volt){
+    if (a.t==0) return a;
     pt result;
     result.x=a.x;
     result.y=a.y;
     result.t=a.t;
-    if (result.t==0) return result ;
     
     if(a.x<x&&a.x+BLOCK_WIDTH>x){
         if(a.y<y&&a.y+BLOCK_HEIGHTH>y){
-            
             if (volt<volt_gate_r&&volt>volt_gate_l){
                 result.t=0;
                 hit = 10;
                 clearRectangle(a.x,a.y, a.x+BLOCK_WIDTH,a.y+BLOCK_HEIGHTH, 0);
+                updateScore();
             }
-            
         }
     }
     if (hit >= 0) showHits();
     delay(2);
     return result;
+}
+
+void showInterface(void) {
+    drawLine(90, 0, 90, 63, 0, 0);
+    drawLine(22, 0, 22, 63, 1, 2);
+    drawLine(45, 0, 45, 63, 1, 2);
+    drawLine(67, 0, 67, 63, 1, 2);
+    
+    drawRectangle(0x00, 0x00, 0x7f, 0x3f, 0);
+    setColorBoard(0);
+    drawLine(6, 63, 6 + BLOCK_WIDTH, 63, 0, 0);
+    drawLine(28, 63, 28 + BLOCK_WIDTH, 63, 0, 0);
+    drawLine(51, 63, 51 + BLOCK_WIDTH, 63, 0, 0);
+    drawLine(73, 63, 73 + BLOCK_WIDTH, 63, 0, 0);
+    drawLine(6, 0, 6 + BLOCK_WIDTH, 0, 0, 0);
+    drawLine(28, 0, 28 + BLOCK_WIDTH, 0, 0, 0);
+    drawLine(51, 0, 51 + BLOCK_WIDTH, 0, 0, 0);
+    drawLine(73, 0, 73 + BLOCK_WIDTH, 0, 0, 0);
+    setColorBoard(1);
+
+    drawCross(22, 52);
+    drawCross(45, 52);
+    drawCross(67, 52);
+
+    drawRectangle(98, 6, 118, 21, 0);
+    //showChar(106, 9, 'H');
+    drawRectangle(98, 24, 118, 39, 0);
+    showChar(104, 27, '0');
+    showChar(110, 27, '0');
+    drawRectangle(98, 42, 118, 57, 0);
+    showChar(104, 45, '0');
+    showChar(110, 45, '0');
 }
