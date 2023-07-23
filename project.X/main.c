@@ -145,7 +145,7 @@ int main() {
         }*/
         //showNumber(104,45,(char)(10*the_volt));
     }
-
+    /*
     while(1){
         the_volt=getPressure();
         if(the_volt<1){
