@@ -55,3 +55,5 @@ dkms.conf
 .vscode/
 debug/
 build/
+dist/
+nbproject/

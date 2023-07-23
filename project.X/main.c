@@ -6,9 +6,6 @@
 
 
 
-
-
-
 void MCU_init() {
     /* setup I/O ports to connect to the LCD module */
     // let A,B,D,E all to be output
@@ -77,7 +74,7 @@ int main() {
     //uchar hits=0;
     ADC_init();
     double the_volt;
-   /**/ while (1) {
+    while (1) {
         the_volt = 0;
         the_volt=getPressure();
         /*if (the_volt>1){
@@ -111,6 +108,21 @@ int main() {
             for(i=0;i<4;i++){
                 Check_Remove_Rect(pts[i].x,pts[i].y,11,48);
             }
+            delay(4);
+        }
+        the_volt=getPressure();
+        if(the_volt<1){
+            drawCross(11, 58);
+            delay(5);
+        }else if (the_volt<2.0){
+            drawCross(34, 58);
+            delay(5);
+        }else{
+            drawCross(56, 58);
+            setColorBoard(0);
+            drawCross(34, 58);
+            drawCross(11, 58);
+            setColorBoard(1);
             delay(5);
         }else if (the_volt<2.0){
             for(i=0;i<4;i++){
@@ -134,8 +146,6 @@ int main() {
         //showNumber(104,45,(char)(10*the_volt));
     }
 
-    
-    /*ADC_init();
     while(1){
         the_volt=getPressure();
         if(the_volt<1){
@@ -157,5 +167,6 @@ int main() {
 
     }
     */
+
     return 0;
 }
