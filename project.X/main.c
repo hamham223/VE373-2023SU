@@ -2,6 +2,8 @@
 #include "display.h"
 #include "measure.h"
 #include "music.h"
+#include "gameplay.h"
+
 
 
 void MCU_init() {
@@ -44,8 +46,8 @@ int main() {
     delay(50);
     // screenClear();
     // delay(100);
-    configurePWM();
-    configureT4();
+    // configurePWM();
+    // configureT4();
 
     drawLine(90, 0, 90, 63, 0, 0);
     drawLine(22, 0, 22, 63, 1, 2);
@@ -53,13 +55,12 @@ int main() {
     drawLine(67, 0, 67, 63, 1, 2);
     drawRectangle(0x00, 0x00, 0x7f, 0x3f, 0);
 
-    drawCross(11, 58);
-    drawCross(34, 58);
-    drawCross(56, 58);
-    drawCross(79, 58);
+    drawCross(22, 48);
+    drawCross(45, 48);
+    drawCross(67, 48);
 
     drawRectangle(98, 6, 118, 21, 0);
-    showChar(106, 9, 'H');
+    //showChar(106, 9, 'H');
     drawRectangle(98, 24, 118, 39, 0);
     showChar(104, 27, '9');
     showChar(110, 27, '9');
@@ -70,18 +71,42 @@ int main() {
 
     uchar i = 0;
     uchar j = 0;
+    //uchar hits=0;
     ADC_init();
     double the_volt;
     while (1) {
         the_volt = 0;
+        the_volt=getPressure();
+        /*if (the_volt>1){
+            pts[2].t=1;
+            //clearRectangle(pts[2].x, pts[2].y, pts[2].x+BLOCK_WIDTH, pts[2].y+BLOCK_HEIGHTH,0);
+        }else{
+            pts[2].t=0;
+            clearRectangle(pts[2].x, pts[2].y, pts[2].x+BLOCK_WIDTH, pts[2].y+BLOCK_HEIGHTH,0);
+        }*/
         for (i = 0; i < 4; i++) {
-            moveRectangleDown(pts[i].x, pts[i].y, pts[i].x+BLOCK_WIDTH, pts[i].y+BLOCK_HEIGHTH, 3, 0);
-            pts[i].y = pts[i].y + 3;
-            if (pts[i].y >=47) {
-                clearRectangle(pts[i].x, pts[i].y, pts[i].x+BLOCK_WIDTH, pts[i].y+BLOCK_HEIGHTH, 0);
-                pts[i].y = 1;
-                j = j+1;
-                showNumber(104, 45, j);
+            
+                pts[2] = new_Check_Remove_Rect(pts[2],56,48,0,1,the_volt);
+                pts[1] = new_Check_Remove_Rect(pts[1],34,48,0,1,the_volt);
+                pts[0] = new_Check_Remove_Rect(pts[0],11,48,1.1,2.8,the_volt);
+                pts[3] = new_Check_Remove_Rect(pts[3],79,48,1.1,2.8,the_volt);
+                //moveRectangleDown(pts[i].x, pts[i].y, pts[i].x+BLOCK_WIDTH, pts[i].y+BLOCK_HEIGHTH, 3, 0);
+                moveRectDown(pts[i],2,0);
+                pts[i].y = pts[i].y + 2;
+            
+                if (pts[i].y >= 53) {
+                    clearRectangle(pts[i].x, pts[i].y, pts[i].x+BLOCK_WIDTH, pts[i].y+BLOCK_HEIGHTH, 0);
+                    pts[i].y = 1;
+                    pts[i].t = 1;
+                    //showNumber(104, 45, j);
+                }
+                //showNumber(104,45,(char)(10*the_volt));
+            delay(2);
+        }
+       /* the_volt=getPressure();
+        if(the_volt<1){
+            for(i=0;i<4;i++){
+                Check_Remove_Rect(pts[i].x,pts[i].y,11,48);
             }
             delay(4);
         }
@@ -99,13 +124,28 @@ int main() {
             drawCross(11, 58);
             setColorBoard(1);
             delay(5);
-        }
-        showNumber(104,45,(char)(10*the_volt));
-        delay(5);
+        }else if (the_volt<2.0){
+            for(i=0;i<4;i++){
+                Check_Remove_Rect(pts[i].x,pts[i].y,34,48);
+            }
+            //drawCross(34, 58);
+            delay(5);
+        }else{
+            
+            drawCross(56, 58);
+            setColorBoard(0);
+            drawCross(34, 58);
+            drawCross(11, 58);
+            setColorBoard(1);
+            
+           for(i=0;i<4;i++){
+                Check_Remove_Rect(pts[i].x,pts[i].y,56,48);
+            }
+            delay(5);
+        }*/
+        //showNumber(104,45,(char)(10*the_volt));
     }
-
-    
-    ADC_init();
+    /*
     while(1){
         the_volt=getPressure();
         if(the_volt<1){
@@ -126,6 +166,7 @@ int main() {
         delay(20);
 
     }
-    
+    */
+
     return 0;
 }

@@ -3,6 +3,12 @@
 
 typedef unsigned char uchar;
 
+typedef struct _pt_ {
+    uchar x;
+    uchar y;
+    uchar t;
+} pt;
+
 void UART_init(void);
 
 void SendData(const uchar dat);
@@ -18,6 +24,7 @@ void drawRectangleCommand(uchar * rect_cmd, uchar size);
 void drawRectangle(uchar x1, uchar y1, uchar x2, uchar y2, uchar solid);
 void clearRectangle(uchar x1, uchar y1, uchar x2, uchar y2, uchar solid);
 void moveRectangleDown(uchar x1, uchar y1, uchar x2, uchar y2, uchar step, uchar solid);
+void moveRectDown(pt a,uchar step, uchar solid);
 void drawPoint(uchar x, uchar y);
 void drawCross(uchar x, uchar y);
 
@@ -30,10 +37,7 @@ void delay(unsigned int time);
 
 void initRects(void);
 
-typedef struct _pt_ {
-    uchar x;
-    uchar y;
-} pt;
+
 // The matrix have the same shape
 // 10*10, x = 10 ?
 #define BLOCK_HEIGHTH 10
