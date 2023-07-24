@@ -250,6 +250,22 @@ void drawCross(uchar x, uchar y) {
     drawLine(x-1, y, x+1, y,0,0);
 }
 
+void showStart(void) {
+    SendString(COMMAND_BEGIN, 2);
+    uchar init[7] = {0};
+    init[0] = 0x32; init[2] = 0x0c;
+    init[4] = 0x08; init[6] = 0x18;
+    SendString(init, 7);
+    SendString("click to", 8);
+    SendString(COMMAND_END, 4);
+    delay(10);
+    init[4] = 0x48;
+    SendString(COMMAND_BEGIN, 2);
+    SendString(init, 7);
+    SendString(" start  ", 8);
+    SendString(COMMAND_END, 4);
+}
+
 void showInit(void) {
     SendString(COMMAND_BEGIN, 2);
     uchar init[7] = {0};
@@ -258,15 +274,13 @@ void showInit(void) {
     SendString(init, 7);
     SendString("Loading", 8);
     SendString(COMMAND_END, 4);
-    delay(100);
-    screenClear();
 }
 
 void showEnd(void) {
     SendString(COMMAND_BEGIN, 2);
     uchar init[7] = {0};
     init[0] = 0x33; init[2] = 0x0c;
-    init[4] = 0x03; init[6] = 0x12;
+    init[4] = 0x02; init[6] = 0x12;
     SendString(init, 7);
     SendString("End....", 8);
     T4CONbits.TON = 0;

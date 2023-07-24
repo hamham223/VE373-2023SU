@@ -98,5 +98,6 @@ void timer_4_interrupt(void) {
 }
 
 unsigned char getInitHeight(void) {
-    return 14 - durations[global_index]/1000;
+    return 1;
+    // return 14 - durations[global_index]/1000;
 }

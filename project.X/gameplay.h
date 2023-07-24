@@ -10,6 +10,7 @@ pt checkHits(pt a,uchar x,uchar y,double volt_gate_l,double volt_gate_r,double v
 
 void showInterface(void);
 void comboClear(void);
+void CN_init(void);
 
 #endif	/* GAMEPLAY_H */
 

@@ -9,10 +9,12 @@
 void MCU_init() {
     /* setup I/O ports to connect to the LCD module */
     // let A,B,D,E all to be output
-    TRISD = 0xFFF0;
+
     PORTD = 0;
     TRISECLR = 0xFFFF;
     TRISACLR = 0xFFFF;
+    TRISDCLR = 0xFFFF;
+    TRISD = 0xFFF0;
     // TRISBCLR = 0xFFFF;
 
     /* setup Timer to count for 1 us and 1 ms */
@@ -38,15 +40,35 @@ void MCU_init() {
     // LATDbits.LATD2 = 1;
 }
 
+static uchar gameStart = 0;
+#define readD  PORTDbits.RD13
+#pragma interrupt CN_ISR ipl5 vector 26
+void CN_ISR (void) {
+    LATDbits.LATD2 = 1;
+	IEC1bits.CNIE = 0;
+    gameStart = 1;
+	int n = 0;
+	while (n < 2000) n++;
+
+	IFS1bits.CNIF = 0;
+    IEC1bits.CNIE = 1;
+}
+
 int main() {
     MCU_init();
     UART_init();
-    // drawExample();
+    CN_init();
+
+    screenClear();
+    showStart();
+    while (gameStart == 0);
+
+    screenClear();
     showInit();
-    delay(10);
+    delay(500);
+    screenClear();
     showInterface();
-    // screenClear();
-    // delay(100);
+
     configurePWM();
     configureT4();
     initRects();

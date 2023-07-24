@@ -127,3 +127,18 @@ void showInterface(void) {
     showChar(104, 45, '0');
     showChar(110, 45, '0');
 }
+
+
+void CN_init(void){
+	asm("di");
+	CNCON = 0x8000;
+	CNENbits.CNEN19 = 1; //CN19/RD13 as input
+	CNPUEbits.CNPUE19 = 1;
+	PORTDbits.RD13;
+	IPC6SET = 0x00140000; //Set priority level = 5
+	IPC6SET = 0x00030000; //Set subpriority level = 3
+	IFS1CLR = 0x0001; //Clear interrupt flag
+	IEC1SET = 0x0001;
+	asm("ei");
+}
+
