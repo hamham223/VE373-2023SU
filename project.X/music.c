@@ -14,19 +14,19 @@
 #define B4 247
 
 // int total_time = 19575;
-static int total_time = 24000;
+static int total_time = 31600;
 static int notes[] = {C4, D4, E4, C4, G4, 0, 
-                E4, D4, G4, D4, 0, 
+                E4, 0, D4, G4, D4, 0, 
                 C4, A3, E4, 0, C4, B3, 0,
-                C4, B3, A3, B3, C4, D4, 0,
-                G3, C4, D4, E4, 0, F4, 0,
-                F4, E4, D4, D4, 0, 0};
-static int durations[] = {3000, 3000, 3000, 3000, 5000, 3000, 
-                  3000, 5000, 5000, 2000, 3000, 
-                  3000, 3000, 5000, 3000, 3000, 7000, 3000,
-                  3000, 3000, 4000, 4000, 2000, 2500, 2000, 
-                  4000, 3000, 2000, 2000, 5000, 3000, 3000,
-                  3000, 3000, 2000, 5000, 10000, 10000};
+                C4, B3, A3, 0, B3, 0, C4, D4, 0,
+                G3, 0,  C4, 0, D4, E4, 0, F4, 0,
+                F4, E4, 0, C4, D4, 0, 0};
+static int durations[] = {3000, 3000, 3000, 3000, 6000, 3000, 
+                  3000, 500, 5000, 5000, 2000, 3000, 
+                  3000, 3000, 5000, 2000, 3000, 7000, 3000,
+                  3000, 3000, 4000, 2000, 4000, 2000, 3000, 3000, 1500, 
+                  4500, 2000, 4000, 2000, 3000, 3000, 2000, 6000, 3000,
+                  3000, 5000, 2000, 2000, 6000, 10000, 10000};
 static volatile int index = 0; // ?????
 extern unsigned char global_index;
 
@@ -72,16 +72,16 @@ void configureT4(void) {
 // ???3??????
 #pragma interrupt timer_4_interrupt ipl5 vector 16
 void timer_4_interrupt(void) {
-    TMR4 = 0;               // ?????
-    IFS0bits.T4IF = 0; // ?? Timer3 ?????
-    if (global_index/2<sizeof(notes)){
-        if (global_index%2==0){
+    TMR4 = 0;
+    IFS0bits.T4IF = 0; 
+    if (global_index/2 < sizeof(notes)){
+        if (global_index%2 == 0){
             PR4 = durations[global_index/2]*total_time/8000;
             if (notes[global_index/2]==0){
                 OC1RS = 0;
             }else{
                 int halfPeriod = total_time / notes[global_index/2];
-                PR2=halfPeriod*2;
+                PR2 = halfPeriod*2;
                 OC1RS = halfPeriod;
             }    
         }
@@ -90,7 +90,7 @@ void timer_4_interrupt(void) {
             OC1RS = 0;
         }
         global_index +=1;
-        if (global_index == 74) global_index = 0;
+        if (global_index == 87) global_index = 0;
     }
     else {
         OC1RS = 0;

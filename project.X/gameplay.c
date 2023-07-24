@@ -68,7 +68,7 @@ static void updateScore(void) {
 }
 
 void comboClear(void) {
-    if (combo > 0) showNumber(104, 27, combo);
+    if (combo > 0) showNumber(104, 27, 0);
     combo = 0;
 }
 

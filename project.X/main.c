@@ -84,7 +84,7 @@ int main() {
     //uchar hits=0;
     ADC_init();
     double the_volt;
-    while (global_index < 73) {
+    while (global_index < 730) {
         the_volt = getPressure();
         /*if (the_volt>1){
             pts[2].t=1;
