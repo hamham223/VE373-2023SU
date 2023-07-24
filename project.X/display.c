@@ -38,7 +38,7 @@ void UART_init(void) {
     U1MODEbits.ON = 1;
 
     asm("ei");
-    delay(500);
+    delay(200);
 }
 
 void SendData(const unsigned char dat){

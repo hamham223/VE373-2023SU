@@ -32,3 +32,46 @@ double getPressure(void) {
 
     return voltage;
 }
+
+void SendData2(const unsigned char dat){
+	while (U2ASTAbits.TRMT!=1);
+	U2ATXREG = dat;
+	while (U2ASTAbits.TRMT!=1);
+}
+
+void SendString2(const unsigned char *s, unsigned int size){
+	LATDbits.LATD1 = 1;
+	unsigned int i;
+	for(i = 0; i < size; i++){
+		U3ATXREG = *s;
+		while (U3ASTAbits.TRMT!=1);
+		s++;
+	}
+	LATDbits.LATD1 = 0;
+}
+
+void UART2_init(void) {
+    asm("di");
+    
+    // Setup for UART3 Transmit
+	U3AMODEbits.BRGH = 1; 
+	U3ABRG = 16;
+    // The most common data format is 8,N,1 
+
+	U3AMODEbits.PDSEL = 0b00;
+	U3AMODEbits.STSEL = 0;
+	U3AMODEbits.UEN = 0b00;
+	
+    // no inter-transmit interrupted are needed, skip
+	U3ASTAbits.UTXEN = 1;
+	IFS1bits.U3ATXIF = 0; // IF clear
+	
+    // config the UART Recieve
+    // baud rate, stop bit are already configed;
+
+	U3AMODEbits.ON = 0;
+	U3AMODEbits.ON = 1;
+
+    asm("ei");
+    delay(100);
+}

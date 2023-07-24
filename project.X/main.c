@@ -56,8 +56,10 @@ void CN_ISR (void) {
 
 int main() {
     MCU_init();
+    UART2_init();
     UART_init();
     CN_init();
+    SendString2("11243431", 9);
 
     screenClear();
     showStart();
