@@ -78,6 +78,7 @@ void setColorBoard(uchar normal) {
 void revertColor(void) {
     ifFrontColor = 1 - ifFrontColor;
     setColorBoard(ifFrontColor);
+    delay(1);
 }
 
 /**
@@ -100,7 +101,7 @@ void drawExample(void) {
 void delaySome(void)	{
 	unsigned char i, j;
 	i = 2;
-	j = 199;
+	j = 155;
 	do {
 		while (--j);
 	} while (--i);
@@ -362,9 +363,50 @@ void initRects(void) {
     pts[0].y = 36;
     pts[1].y = 27;
     pts[2].y = 18;
-    pts[3].y = 9;
-    pts[0].t = 1;
+    pts[3].y = 6;
+    pts[0].t = 0;
     pts[1].t = 1;
     pts[2].t = 1;
     pts[3].t = 1;
+} 
+
+void initRects_p1(void) {
+    pts[0].y = 36;
+    pts[1].y = 27;
+    pts[2].y = 18;
+    pts[3].y = 9;
+    
+    pts[0].t = 0;
+    pts[1].t = 1;
+    pts[2].t = 0;
+    pts[3].t = 1;
+}
+
+void initRects_p2(void) {
+    pts[0].y = 35;
+    pts[1].y = 18;
+    pts[2].y = 18;
+    pts[3].y = 9;
+    
+    pts[0].t = 1;
+    pts[1].t = 1;
+    pts[2].t = 0;
+    pts[3].t = 0;
+}
+void initRects_p3(void) {
+    pts[0].y = 36;
+    pts[1].y = 27;
+    pts[2].y = 18;
+    pts[3].y = 6;
+    
+    pts[0].t = 0;
+    pts[1].t = 1;
+    pts[2].t = 1;
+    pts[3].t = 0;
+}
+
+void clearAll(void){
+    unsigned char j;
+    for (j = 0; j < 4; j++)
+        clearRectangle(pts[j].x, pts[j].y, pts[j].x+BLOCK_WIDTH, pts[j].y+BLOCK_HEIGHTH, 0);
 }

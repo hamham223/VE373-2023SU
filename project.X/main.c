@@ -1,4 +1,5 @@
 #include <p32xxxx.h>
+#include <proc/p32mx795f512l.h>
 #include "display.h"
 #include "measure.h"
 #include "music.h"
@@ -59,12 +60,14 @@ int main() {
     UART2_init();
     UART_init();
     CN_init();
+    ADC_init();
     SendString2("11243431", 9);
 
     screenClear();
     showStart();
     while (gameStart == 0);
-
+    gameStart = 0;
+    
     screenClear();
     showInit();
     delay(500);
@@ -79,24 +82,39 @@ int main() {
     uchar j = 0;
     uchar step = 2;
     extern uchar combo;
-    extern uchar global_index;
     combo = 0;
-    //uchar hits=0;
-    ADC_init();
+    extern uchar global_index;
+    extern uchar global_count;
+    
     double the_volt;
-    while (global_index < 730) {
+    while (global_count < 2) {
         the_volt = getPressure();
-        /*if (the_volt>1){
-            pts[2].t=1;
-            //clearRectangle(pts[2].x, pts[2].y, pts[2].x+BLOCK_WIDTH, pts[2].y+BLOCK_HEIGHTH,0);
-        }else{
-            pts[2].t=0;
-            clearRectangle(pts[2].x, pts[2].y, pts[2].x+BLOCK_WIDTH, pts[2].y+BLOCK_HEIGHTH,0);
-        }*/
-        pts[2] = checkHits(pts[2], 56, 52, 0.0, 1.0, the_volt);
-        pts[1] = checkHits(pts[1], 34, 52, 0.0, 1.0, the_volt);
-        pts[0] = checkHits(pts[0], 11, 52, 1.1, 2.8, the_volt);
-        pts[3] = checkHits(pts[3], 79, 52, 1.1, 2.8, the_volt);
+
+        pts[2] = checkHits(pts[2], 56, 52, 0.0, 3.3, the_volt);
+        pts[1] = checkHits(pts[1], 34, 52, 0.0, 3.3, the_volt);
+        pts[0] = checkHits(pts[0], 11, 52, 0.0, 3.3, the_volt);
+        pts[3] = checkHits(pts[3], 79, 52, 0.0, 3.3, the_volt);
+        
+        if (global_index==11 || global_index==37){
+                clearAll();
+                initRects_p1();
+        }
+        if (global_index==21||global_index==1){
+                clearAll();
+                initRects();
+        }
+        if (global_index==55){
+                clearAll();
+                initRects_p2();
+        }
+        if (global_index==75){
+                clearAll();
+                initRects_p1();
+        }
+        if (global_index==65){
+                clearAll();
+                initRects_p3();
+        }
         for (i = 0; i < 4; i++) {
                 //moveRectangleDown(pts[i].x, pts[i].y, pts[i].x+BLOCK_WIDTH, pts[i].y+BLOCK_HEIGHTH, 3, 0);
                 moveRectDown(pts[i], step, 0);
@@ -106,73 +124,12 @@ int main() {
                     clearRectangle(pts[i].x, pts[i].y, pts[i].x+BLOCK_WIDTH, pts[i].y+BLOCK_HEIGHTH, 0);
                     pts[i].y = getInitHeight();
                     if (pts[i].t == 1) comboClear();
-                    pts[i].t = 1;
+                    //pts[i].t = 1;
                 }
             delay(2);
         }
-       /* the_volt=getPressure();
-        if(the_volt<1){
-            for(i=0;i<4;i++){
-                Check_Remove_Rect(pts[i].x,pts[i].y,11,48);
-            }
-            delay(4);
-        }
-        the_volt=getPressure();
-        if(the_volt<1){
-            drawCross(11, 58);
-            delay(5);
-        }else if (the_volt<2.0){
-            drawCross(34, 58);
-            delay(5);
-        }else{
-            drawCross(56, 58);
-            setColorBoard(0);
-            drawCross(34, 58);
-            drawCross(11, 58);
-            setColorBoard(1);
-            delay(5);
-        }else if (the_volt<2.0){
-            for(i=0;i<4;i++){
-                Check_Remove_Rect(pts[i].x,pts[i].y,34,48);
-            }
-            //drawCross(34, 58);
-            delay(5);
-        }else{
-            
-            drawCross(56, 58);
-            setColorBoard(0);
-            drawCross(34, 58);
-            drawCross(11, 58);
-            setColorBoard(1);
-            
-           for(i=0;i<4;i++){
-                Check_Remove_Rect(pts[i].x,pts[i].y,56,48);
-            }
-            delay(5);
-        }*/
     }
-    /*
-    while(1){
-        the_volt=getPressure();
-        if(the_volt<1){
-            drawCross(11, 58);
-            delay(10);
-        }else if (the_volt<2.0){
-            drawCross(34, 58);
-            delay(10);
-        }else{
-            drawCross(56, 58);
-            setColorBoard(0);
-            drawCross(34, 58);
-            drawCross(11, 58);
-            setColorBoard(1);
-            delay(10);
-        }
-        showNumber(104,45,(char)(10*the_volt));
-        delay(20);
-
-    }
-    */
     showEnd();
+    
     return 0;
 }

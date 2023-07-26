@@ -22,13 +22,13 @@ double getPressure(void) {
     volatile double voltage = 0;
 		int i = 0;
         voltage = 0;
-        for (; i <50 ; i++)
+        for (; i < 40 ; i++)
 		{
 			while (!IFS1 & 0x0002){};// conversion done?
 			voltage += (double)ADC1BUF0;
 			IFS1CLR = 0x0002;// clear ADIF
 		}
-        voltage=voltage/1024.0/50*3.3; // display the average
+        voltage=voltage/1024.0/40*3.3; // display the average
 
     return voltage;
 }

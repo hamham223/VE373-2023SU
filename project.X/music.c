@@ -29,7 +29,7 @@ static int durations[] = {3000, 3000, 3000, 3000, 6000, 3000,
                   3000, 5000, 2000, 2000, 6000, 10000, 10000};
 static volatile int index = 0; // ?????
 extern unsigned char global_index;
-
+extern unsigned char global_count;
 
 #define PWM_FREQUENCY_HZ  50   // ?? PWM ????
 
@@ -54,6 +54,7 @@ void configurePWM(void) {
 void configureT4(void) {
     // 
     global_index = 0;
+    global_count = 0;
     T4CONbits.TON = 0;      // ??Timer4
     T4CONbits.TCS = 0;      // ???????
     T4CONbits.TCKPS = 0b111; // ????1:256
@@ -90,7 +91,10 @@ void timer_4_interrupt(void) {
             OC1RS = 0;
         }
         global_index +=1;
-        if (global_index == 87) global_index = 0;
+        if (global_index == 87) {
+            global_index = 0;
+            global_count += 1;
+        }
     }
     else {
         OC1RS = 0;

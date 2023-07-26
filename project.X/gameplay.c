@@ -44,6 +44,9 @@ static int hit = 0;
 extern uchar combo;
 extern uchar global_index;
 const char status[15] = "HHHHGGGGPPPP";
+static uchar response_time=0;
+static uchar response_count=0;
+static double pressure=0;
 
 static void showHits(uchar st){
 
@@ -79,19 +82,28 @@ pt checkHits(pt a,uchar x,uchar y,double volt_gate_l,double volt_gate_r,double v
     result.y=a.y;
     result.t=a.t;
     uchar status = 0;
-    
+    uchar singleresponse = 0;
+    double current_pressure=0.0;
     if(a.x<x&&a.x+BLOCK_WIDTH>x){
         if(a.y<y&&a.y+BLOCK_HEIGHTH>y){
             if (volt<volt_gate_r&&volt>volt_gate_l){
                 result.t=0;
                 hit = 10;
                 status = y - a.y;
+                singleresponse=80*status;
+                response_time+=singleresponse;
+                response_count+=1;
+                current_pressure=-1000*(47000*volt/(3.3-volt))+15500;
+                if (current_pressure>0){
+                    pressure+=current_pressure;
+                }
                 clearRectangle(a.x,a.y, a.x+BLOCK_WIDTH,a.y+BLOCK_HEIGHTH, 0);
                 updateScore();
             }
         }
     }
-    if (hit >= 0) showHits(status);
+    if (hit >= 0) showHits(status); 
+        showNumber(106,9,(int)(current_pressure)%100);
     delay(2);
     return result;
 }
@@ -134,7 +146,13 @@ void CN_init(void){
 	CNCON = 0x8000;
 	CNENbits.CNEN19 = 1; //CN19/RD13 as input
 	CNPUEbits.CNPUE19 = 1;
+    CNENbits.CNEN16 = 1; //CN16/RD7 as input
+	CNPUEbits.CNPUE16 = 1;
+    CNENbits.CNEN15 = 1; //CN16/RD7 as input
+	CNPUEbits.CNPUE15 = 1;
 	PORTDbits.RD13;
+    PORTDbits.RD7;
+    PORTDbits.RD6;
 	IPC6SET = 0x00140000; //Set priority level = 5
 	IPC6SET = 0x00030000; //Set subpriority level = 3
 	IFS1CLR = 0x0001; //Clear interrupt flag
