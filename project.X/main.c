@@ -144,7 +144,7 @@ int main() {
     char buffer[25] = "";
     sprintf(buffer, "Response time: %5.1f\n", res);
     SendString2(buffer, 21);
-    sprintf(buffer, "Pressure: %5.2f\n", res);
+    sprintf(buffer, "Pressure: %5.2f\n", pr);
     SendString2(buffer, 17);
     SendString2("Please reset the power supply to restart!\n", 43);
     return 0;

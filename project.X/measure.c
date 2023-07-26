@@ -63,7 +63,6 @@ void UART2_init(void) {
 	U5MODEbits.STSEL = 0;
 	// U5MODEbits.UARTEN = 0;
 	
-	
     // no inter-transmit interrupted are needed, skip
 	U5STAbits.UTXEN = 1;
 	IFS2bits.U5TXIF = 0; // IF clear
