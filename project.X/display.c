@@ -1,5 +1,7 @@
 #include <p32xxxx.h>
 #include "display.h"
+#include <stdio.h>
+#include <string.h>
 
 static const unsigned char COMMAND_BEGIN[2] = {0xfe, 0xfd};
 static const unsigned char COMMAND_END[4] = {0xdd, 0xcc, 0xbb, 0xaa};
@@ -353,6 +355,38 @@ void showNumber(uchar x, uchar y, uchar num) {
     showChar(x, y, a+48);
     a = num%10;
     showChar(x+6, y, a+48);
+}
+
+void showResult(double res, double pr) {
+    SendString(COMMAND_BEGIN, 2);
+    uchar init[7] = {0};
+    init[0] = 0x32; init[2] = 0x0c;
+    init[4] = 0x08; init[6] = 0x12;
+    SendString(init, 7);
+    SendString("Response", 8);
+    SendString(COMMAND_END, 4);
+    delay(10);
+    init[4] = 0x48;
+    SendString(COMMAND_BEGIN, 2);
+    SendString(init, 7);
+    char buffer[8]="";
+    sprintf(buffer, " %5.1f", res);
+    SendString(buffer, 8);
+    
+    SendString(COMMAND_END, 4);
+    delay(10);
+    SendString(COMMAND_BEGIN, 2);
+    init[4] = 0x08; init[6] = 0x28;
+    SendString(init, 7);
+    SendString("Pressure", 8);
+    SendString(COMMAND_END, 4);
+    delay(10);
+    init[4] = 0x48;
+    SendString(COMMAND_BEGIN, 2);
+    SendString(init, 7);
+    sprintf(buffer, " %5.2f", pr);
+    SendString(buffer, 8);
+    SendString(COMMAND_END, 4);
 }
 
 void initRects(void) {

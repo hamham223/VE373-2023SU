@@ -3,6 +3,7 @@
 #include "display.h"
 #include "music.h"
 #include <p32xxxx.h>
+#include <math.h>
 
 uchar Check_Remove_Rect(uchar rectx,uchar recty,uchar x,uchar y){
     uchar flag=0;
@@ -44,10 +45,10 @@ static int hit = 0;
 extern uchar combo;
 extern uchar global_index;
 const char status[15] = "HHHHGGGGPPPP";
-static uchar response_time=0;
-static uchar response_count=0;
-static double pressure=0;
-
+extern int response_time;
+extern uchar response_count;
+extern double pressure;
+const double e=2.71828;
 static void showHits(uchar st){
 
     if (hit==10) {
@@ -84,16 +85,18 @@ pt checkHits(pt a,uchar x,uchar y,double volt_gate_l,double volt_gate_r,double v
     uchar status = 0;
     uchar singleresponse = 0;
     double current_pressure=0.0;
+    double resistant=0;
     if(a.x<x&&a.x+BLOCK_WIDTH>x){
         if(a.y<y&&a.y+BLOCK_HEIGHTH>y){
             if (volt<volt_gate_r&&volt>volt_gate_l){
                 result.t=0;
                 hit = 10;
                 status = y - a.y;
-                singleresponse=80*status;
-                response_time+=singleresponse;
-                response_count+=1;
-                current_pressure=-1000*(47000*volt/(3.3-volt))+15500;
+                singleresponse= 80*status;
+                response_time += singleresponse;
+                response_count += 1;
+                resistant=(4.7*volt/(3.3-volt));
+                current_pressure=1230*pow(e,-0.514*resistant)/15;
                 if (current_pressure>0){
                     pressure+=current_pressure;
                 }
@@ -103,7 +106,6 @@ pt checkHits(pt a,uchar x,uchar y,double volt_gate_l,double volt_gate_r,double v
         }
     }
     if (hit >= 0) showHits(status); 
-        showNumber(106,9,(int)(current_pressure)%100);
     delay(2);
     return result;
 }

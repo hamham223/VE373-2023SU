@@ -4,7 +4,7 @@
 #include "measure.h"
 #include "music.h"
 #include "gameplay.h"
-
+#include <stdio.h>
 
 
 void MCU_init() {
@@ -61,8 +61,7 @@ int main() {
     UART_init();
     CN_init();
     ADC_init();
-    SendString2("11243431", 9);
-
+ 
     screenClear();
     showStart();
     while (gameStart == 0);
@@ -85,15 +84,20 @@ int main() {
     combo = 0;
     extern uchar global_index;
     extern uchar global_count;
-    
+    response_time=0;
+    response_count=0;
     double the_volt;
     while (global_count < 2) {
         the_volt = getPressure();
 
-        pts[2] = checkHits(pts[2], 56, 52, 0.0, 3.3, the_volt);
-        pts[1] = checkHits(pts[1], 34, 52, 0.0, 3.3, the_volt);
-        pts[0] = checkHits(pts[0], 11, 52, 0.0, 3.3, the_volt);
-        pts[3] = checkHits(pts[3], 79, 52, 0.0, 3.3, the_volt);
+        pts[2] = checkHits(pts[2], 56, 52, 0.0, 1.0, the_volt);
+        pts[1] = checkHits(pts[1], 34, 52, 0.0, 1.0, the_volt);
+        pts[0] = checkHits(pts[0], 11, 52, 1.1, 2.8, the_volt);
+        pts[3] = checkHits(pts[3], 79, 52, 1.1, 2.8, the_volt);
+        // pts[2] = checkHits(pts[2], 56, 52, 0.0, 3.3, the_volt);
+        // pts[1] = checkHits(pts[1], 34, 52, 0.0, 3.3, the_volt);
+        // pts[0] = checkHits(pts[0], 11, 52, 0.0, 3.3, the_volt);
+        // pts[3] = checkHits(pts[3], 79, 52, 0.0, 3.3, the_volt);
         
         if (global_index==11 || global_index==37){
                 clearAll();
@@ -130,6 +134,10 @@ int main() {
         }
     }
     showEnd();
-    
+    screenClear();
+    // showNumber(103,9,(int)(response_time/response_count)%100);
+    double res = (float)response_time/response_count;
+    double pr = pressure / response_count;
+    showResult(res, pr);
     return 0;
 }
