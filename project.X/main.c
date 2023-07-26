@@ -135,9 +135,17 @@ int main() {
     }
     showEnd();
     screenClear();
-    // showNumber(103,9,(int)(response_time/response_count)%100);
+
     double res = (float)response_time/response_count;
     double pr = pressure / response_count;
     showResult(res, pr);
+    SendString2("Congratulations! You finished the game!\n", 40);
+    SendString2("Here are some measuring statistics: \n", 37);
+    char buffer[25] = "";
+    sprintf(buffer, "Response time: %5.1f\n", res);
+    SendString2(buffer, 21);
+    sprintf(buffer, "Pressure: %5.2f\n", res);
+    SendString2(buffer, 17);
+    SendString2("Please reset the power supply to restart!\n", 43);
     return 0;
 }
