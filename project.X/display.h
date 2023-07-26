@@ -19,6 +19,7 @@ void showEnd(void);
 void showStart(void);
 void showChar(uchar x, uchar y, uchar str);
 void showNumber(uchar x, uchar y, uchar num);
+void showResult(double res, double pr);
 void drawExample(void);
 void drawLineCommand(unsigned char * line_cmd, unsigned char size);
 void drawLine(uchar x1, uchar y1, uchar x2, uchar y2, uchar dashed, uchar sep);
