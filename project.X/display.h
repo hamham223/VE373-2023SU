@@ -38,7 +38,7 @@ void delaySome(void);
 void delay(unsigned int time);
 
 void initRects(void);
-
+void initRects_p1(void);
 
 // The matrix have the same shape
 // 10*10, x = 10 ?
